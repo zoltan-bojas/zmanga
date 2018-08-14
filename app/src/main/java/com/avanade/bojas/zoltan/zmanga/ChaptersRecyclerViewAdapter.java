@@ -55,12 +55,9 @@ public class ChaptersRecyclerViewAdapter extends RecyclerView.Adapter<ChaptersRe
         holder.mChapterNameview.setText(mDetails.chapters.get(position).title);
         holder.url = mDetails.chapters.get(position).url;
         holder.mDownloadButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        File targetDiretory = mContext.getDir(holder.chapterName, Context.MODE_PRIVATE);
-                        mModel.downloadChapter(holder.url, targetDiretory);
-                    }
+                v -> {
+                    File targetDiretory = mContext.getDir(holder.chapterName, Context.MODE_PRIVATE);
+                    mModel.downloadChapter(holder.url, targetDiretory);
                 }
         );
 
@@ -101,17 +98,17 @@ public class ChaptersRecyclerViewAdapter extends RecyclerView.Adapter<ChaptersRe
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        public final View mView;
-        public final TextView mChapterNameview;
-        public final Button mDownloadButton;
+        final View mView;
+        final TextView mChapterNameview;
+        final Button mDownloadButton;
         String chapterName;
         String url;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
-            mChapterNameview = (TextView) view.findViewById(R.id.chapter_name);
-            mDownloadButton = (Button) view.findViewById(R.id.downloadButton);
+            mChapterNameview = view.findViewById(R.id.chapter_name);
+            mDownloadButton = view.findViewById(R.id.downloadButton);
 
         }
 

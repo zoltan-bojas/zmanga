@@ -7,7 +7,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,12 +18,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.avanade.bojas.zoltan.zmanga.persistence.DownloadsRepository;
-import com.avanade.bojas.zoltan.zmanga.persistence.FavoritesRepository;
+import com.avanade.bojas.zoltan.zmanga.repository.DownloadsRepository;
+import com.avanade.bojas.zoltan.zmanga.repository.FavoritesRepository;
 import com.avanade.bojas.zoltan.zmanga.persistence.MangaDatabase;
 import com.avanade.bojas.zoltan.zmanga.repository.ChaptersRepository;
 import com.avanade.bojas.zoltan.zmanga.repository.MangaDetailsRepository;
 import com.avanade.bojas.zoltan.zmanga.viewmodel.MangaTitleDetailsViewModel;
+import com.avanade.bojas.zoltan.zmanga.viewmodel.MangaTitleDetailsViewModelFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -136,25 +136,5 @@ public class DetailsActivity extends AppCompatActivity implements ChaptersDownlo
         mModel.addFavorite(new MangaTitle(mMangaDetails.title, mMangaDetails.url, mMangaDetails.titleImagePath));
     }
 
-    private class MangaTitleDetailsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-        Context context;
-        String url;
-
-
-        MangaTitleDetailsViewModelFactory(Context context, String url){
-            this.context = context;
-            this.url = url;
-
-        }
-
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            MangaDatabase db = MangaDatabase.getDatabase(context);
-            return (T)                 new MangaTitleDetailsViewModel(new MangaDetailsRepository(url),
-                    new DownloadsRepository(db),
-                    new ChaptersRepository(),
-                    new FavoritesRepository(db));
-        }
-    }
 
 }

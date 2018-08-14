@@ -35,6 +35,7 @@ public class TitleItemRecyclerViewAdapter
 
     @Override
     public void onMangaTitlesDownoaded(List<MangaTitle> mangaTitleList) {
+        mValues.clear();
         mValues.addAll(mangaTitleList);
         notifyDataSetChanged();
     }
@@ -79,9 +80,9 @@ public class TitleItemRecyclerViewAdapter
         final TextView mIdView;
         final TextView mContentView;
         MangaTitle mItem;
-        final ImageView mImg;
+        public final ImageView mImg;
 
-        ViewHolder(View view) {
+        public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);

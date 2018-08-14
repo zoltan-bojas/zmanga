@@ -1,7 +1,11 @@
 package com.avanade.bojas.zoltan.zmanga;
 
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.avanade.bojas.zoltan.zmanga.repository.MangaTitlesRepository;
+import com.avanade.bojas.zoltan.zmanga.viewmodel.MangaBrowserViewModel;
+import com.avanade.bojas.zoltan.zmanga.viewmodel.MangaBrowserViewModelFactory;
+
 import java.util.ArrayList;
 
 /**
@@ -24,12 +33,14 @@ public class TitlesFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     protected OnListFragmentInteractionListener mListener;
+    MangaBrowserViewModel mModel;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public TitlesFragment() {
+
     }
 
 
@@ -73,9 +84,13 @@ public class TitlesFragment extends Fragment {
     }
 
     public void setUpAdapter(RecyclerView recyclerView) {
-        TitleItemRecyclerViewAdapter adapter = new TitleItemRecyclerViewAdapter(this.getContext().getApplicationContext(), new ArrayList<MangaTitle>(), mListener);
+        TitleItemRecyclerViewAdapter adapter = new TitleItemRecyclerViewAdapter(this.getContext().getApplicationContext(), new ArrayList<MangaTitle>(), this.mListener);
         recyclerView.setAdapter(adapter);
-        new MangaParser(adapter).execute();
+        MangaTitlesRepository mangaTitlesRepository = new MangaTitlesRepository("http://www.mangahere.cc/directory/1.htm?last_chapter_time.za");
+        mModel = ViewModelProviders
+                .of(this.getActivity(), new MangaBrowserViewModelFactory(mangaTitlesRepository))
+                .get(MangaBrowserViewModel.class);
+        mModel.getMangas().observe(this,titles -> adapter.onMangaTitlesDownoaded(titles));
     }
 
 

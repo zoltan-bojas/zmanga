@@ -24,7 +24,7 @@ public class ChapterDownloadInfo {
         this(directory, STARTED,0);
     }
 
-    public ChapterDownloadInfo(String localDirectory, Status status, int maxPages){
+    public ChapterDownloadInfo(@NonNull String localDirectory, Status status, int maxPages){
         this.localDirectory=localDirectory;
         this.status=status;
         this.maxPages=maxPages;
@@ -50,7 +50,7 @@ public class ChapterDownloadInfo {
         public int getCode() {
             return code;
         }
-    };
+    }
 
     public static class StatusConverter {
         @TypeConverter

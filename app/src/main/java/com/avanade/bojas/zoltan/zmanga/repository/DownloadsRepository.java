@@ -1,12 +1,13 @@
-package com.avanade.bojas.zoltan.zmanga.persistence;
+package com.avanade.bojas.zoltan.zmanga.repository;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 
 import com.avanade.bojas.zoltan.zmanga.ChapterDownloadInfo;
+import com.avanade.bojas.zoltan.zmanga.persistence.ChapterDownloadDao;
+import com.avanade.bojas.zoltan.zmanga.persistence.MangaDatabase;
 
 import java.util.List;
 

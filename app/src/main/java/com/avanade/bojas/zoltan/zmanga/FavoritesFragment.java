@@ -1,17 +1,18 @@
 package com.avanade.bojas.zoltan.zmanga;
 
-import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 
-import com.avanade.bojas.zoltan.zmanga.persistence.FavoritesRepository;
+import com.avanade.bojas.zoltan.zmanga.repository.FavoritesRepository;
 import com.avanade.bojas.zoltan.zmanga.persistence.MangaDatabase;
+import com.avanade.bojas.zoltan.zmanga.viewmodel.FavoritesViewModel;
+import com.avanade.bojas.zoltan.zmanga.viewmodel.FavoritesViewModelFactory;
 import com.avanade.bojas.zoltan.zmanga.viewmodel.MangaBrowserViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by zoltan.bojas on 6/7/2018.
@@ -20,22 +21,20 @@ import java.util.List;
 public class FavoritesFragment extends TitlesFragment {
 
     FavoritesRepository repository;
-    MangaBrowserViewModel mModel;
+    FavoritesViewModel mModel;
     @Override
     public void setUpAdapter(RecyclerView recyclerView) {
-
+        TitleItemRecyclerViewAdapter adapter = new TitleItemRecyclerViewAdapter(getContext().getApplicationContext(), new ArrayList<>(), mListener);
+        recyclerView.setAdapter(adapter);
         repository = new FavoritesRepository(MangaDatabase.getDatabase(this.getActivity()));
-        //TODO: rewrite this using view model (MVVM)
-         repository.getFavorites().observe(this, new Observer<List<MangaTitle>>() {
-             @Override
-             public void onChanged(@Nullable List<MangaTitle> mangaTitles) {
-                 TitleItemRecyclerViewAdapter adapter = new TitleItemRecyclerViewAdapter(getContext().getApplicationContext(), mangaTitles, mListener);
-                 recyclerView.setAdapter(adapter);
-             }
-         });
 
-
-
+        mModel = ViewModelProviders
+                .of(this.getActivity(), new FavoritesViewModelFactory(repository))
+                .get(FavoritesViewModel.class);
+        mModel.getFavorites().observe(this,titles -> adapter.onMangaTitlesDownoaded(titles));
     }
+
+
+
 
 }

@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.avanade.bojas.zoltan.zmanga.repository.ChaptersRepository;
 import com.avanade.bojas.zoltan.zmanga.viewmodel.ChapterReaderViewModel;
+import com.avanade.bojas.zoltan.zmanga.viewmodel.ChapterReaderViewModelFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class ChapterReaderActivity extends AppCompatActivity {
         Intent intent = this.getIntent();
         String dir = intent.getStringExtra(DOWNLOAD_DIRECTORY_EXTRA);
         File targetDirectory = this.getDir(dir, Context.MODE_PRIVATE);
-        PagesRecyclerViewAdapter adapter = new PagesRecyclerViewAdapter(mContext, new ArrayList<String>());
+        PagesRecyclerViewAdapter adapter = new PagesRecyclerViewAdapter(mContext, new ArrayList<>());
         ((RecyclerView) findViewById(R.id.chapter_pages_list_view)).setAdapter(adapter);
 
         mModel = ViewModelProviders
@@ -45,15 +46,12 @@ public class ChapterReaderActivity extends AppCompatActivity {
 
 
         // Create the observer which updates the UI.
-        final Observer<ArrayList<String>> pageObserver = new Observer<ArrayList<String>>() {
-            @Override
-            public void onChanged(@Nullable final ArrayList<String> newFileList) {
-                // Update the UI
-                PagesRecyclerViewAdapter adapter =
-                        (PagesRecyclerViewAdapter) ((RecyclerView) findViewById(R.id.chapter_pages_list_view)).getAdapter();
-                adapter.pageLocations = newFileList;
-                adapter.notifyDataSetChanged();
-            }
+        final Observer<ArrayList<String>> pageObserver = newFileList -> {
+            // Update the UI
+            PagesRecyclerViewAdapter adapter1 =
+                    (PagesRecyclerViewAdapter) ((RecyclerView) findViewById(R.id.chapter_pages_list_view)).getAdapter();
+            adapter1.pageLocations = newFileList;
+            adapter1.notifyDataSetChanged();
         };
 
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
@@ -62,20 +60,6 @@ public class ChapterReaderActivity extends AppCompatActivity {
     }
 
 
-    private class ChapterReaderViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-        File mTargetDirectory;
-        ChaptersRepository mChaptersRepository;
-
-        ChapterReaderViewModelFactory(File targetDirectory, ChaptersRepository repo) {
-            mTargetDirectory = targetDirectory;
-            mChaptersRepository = repo;
-        }
-
-        @Override
-        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new ChapterReaderViewModel(mTargetDirectory, mChaptersRepository);
-        }
-    }
 
 
 }

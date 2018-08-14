@@ -15,18 +15,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class ChapterReaderViewModel extends ViewModel {
-    public final MediatorLiveData<ArrayList<String>> pages = new MediatorLiveData<>();
-    ChaptersRepository mChaptersRepository;
+    private final MediatorLiveData<ArrayList<String>> pages = new MediatorLiveData<>();
+    private ChaptersRepository mChaptersRepository;
 
-    public ChapterReaderViewModel(File chapterDirectory, ChaptersRepository repository) {
+    ChapterReaderViewModel(File chapterDirectory, ChaptersRepository repository) {
         mChaptersRepository = repository;
         pages.setValue(new ArrayList<String>());
-        pages.addSource(mChaptersRepository.getPageLocations(), new Observer<ArrayList<String>>() {
-            @Override
-            public void onChanged(@Nullable ArrayList<String> strings) {
-                pages.setValue(strings);
-            }
-        });
+        pages.addSource(mChaptersRepository.getPageLocations(), strings -> pages.setValue(strings));
         mChaptersRepository.getLocalChapter(chapterDirectory);
 
     }

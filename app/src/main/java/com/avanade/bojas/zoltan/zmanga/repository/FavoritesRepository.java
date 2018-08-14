@@ -1,4 +1,4 @@
-package com.avanade.bojas.zoltan.zmanga.persistence;
+package com.avanade.bojas.zoltan.zmanga.repository;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 
 import com.avanade.bojas.zoltan.zmanga.MangaTitle;
 import com.avanade.bojas.zoltan.zmanga.MangaTitlesListener;
+import com.avanade.bojas.zoltan.zmanga.persistence.FavoriteDao;
+import com.avanade.bojas.zoltan.zmanga.persistence.MangaDatabase;
 
 import java.util.ArrayList;
 import java.util.List;

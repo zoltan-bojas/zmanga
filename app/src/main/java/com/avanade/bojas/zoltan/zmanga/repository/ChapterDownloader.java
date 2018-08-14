@@ -29,9 +29,7 @@ public class ChapterDownloader extends AsyncTask<Pair<String,File>, Void, Void> 
 
     }
 
-
-
-    public void download(ArrayList<String> pages, File directory){
+    private void download(ArrayList<String> pages, File directory){
 
         for(int i =0; i<pages.size(); i++) {
             try {
@@ -55,7 +53,7 @@ public class ChapterDownloader extends AsyncTask<Pair<String,File>, Void, Void> 
                 e.printStackTrace();
             }
         }
-    };
+    }
 
     @Override
     protected Void doInBackground(Pair<String,File>... params) {
@@ -73,6 +71,7 @@ public class ChapterDownloader extends AsyncTask<Pair<String,File>, Void, Void> 
             String url = startUrl;
             while(!url.contains("javascript:void(0);")){
                 Document htmlDocument = Jsoup.connect(url).get();
+                //TODO: add error handling, if chapter is not present the select can be empty (eg licensed)
                 String page = htmlDocument.select("section.read_img > a > img").get(1).attr("src");
                 pages.add(page);
                 url = "http:" + htmlDocument.select("section.read_img > a").attr("href");
