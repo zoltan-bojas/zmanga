@@ -1,5 +1,6 @@
 package com.avanade.bojas.zoltan.zmanga.viewmodel;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
@@ -62,12 +63,6 @@ public class MangaTitleDetailsViewModel extends ViewModel {
 
         downloadStatus.addSource(downloadsRepository.getDownloadInfo(), chapterDownloadInfos -> {
             Map<String,ChapterDownloadInfo.Status> results = new HashMap<>();
-
-            Log.e("download info", "download info returnd to model: "
-                    + chapterDownloadInfos.get(0).localDirectory
-                    +", status code: "
-                    + chapterDownloadInfos.get(0).status.getCode());
-            Log.e("download info", "download info size: "+ chapterDownloadInfos.size());
             for(int i= 0; i<chapterDownloadInfos.size();i++){
                 results.put(chapterDownloadInfos.get(i).localDirectory,chapterDownloadInfos.get(i).status);
             }
@@ -87,17 +82,19 @@ public class MangaTitleDetailsViewModel extends ViewModel {
         favoritesRepository.addFavorite(newFavorite);
     }
 
-    public MutableLiveData<Boolean> isFavorite(String newFavorite) {
+    public LiveData<Boolean> isFavorite(String newFavorite) {
        mFavorite = newFavorite;
        favoritesRepository.getFavorites();
         return isFavorite;
     }
 
-    public MediatorLiveData<MangaDetails> getMangaDetails() {
+    public LiveData<MangaDetails> getMangaDetails() {
+        detailsRepository.getDetails();
         return mangaDetails;
     }
 
-    public MediatorLiveData<Map<String, ChapterDownloadInfo.Status>> getDownloadStatus() {
+    public LiveData<Map<String, ChapterDownloadInfo.Status>> getDownloadStatus() {
+        downloadsRepository.getDownloadInfo();
         return downloadStatus;
     }
 }

@@ -79,7 +79,7 @@ public class DetailsActivity extends AppCompatActivity implements ChaptersDownlo
         Observer<MangaDetails> mangaDetailsObserver = new Observer<MangaDetails>() {
             @Override
             public void onChanged(@Nullable MangaDetails mangaDetails) {
-                Log.e("details", "manga details" + mangaDetails.toString());
+                Log.e("details", "manga details: " + ( (mangaDetails!=null) ? mangaDetails.toString():"null"));
                 onChaptersDownloaded(mangaDetails);
             }
         };
@@ -89,8 +89,13 @@ public class DetailsActivity extends AppCompatActivity implements ChaptersDownlo
         Observer<Map<String, ChapterDownloadInfo.Status>> statusObserver = new Observer<Map<String, ChapterDownloadInfo.Status>>() {
             @Override
             public void onChanged(@Nullable Map<String, ChapterDownloadInfo.Status> statusMap) {
-                mStatusMap = statusMap;
-                ((ChaptersRecyclerViewAdapter)((RecyclerView)findViewById(R.id.chapter_list_view)).getAdapter()).updateStatus(mStatusMap);
+                if (statusMap !=null) {
+                    mStatusMap = statusMap;
+                    ChaptersRecyclerViewAdapter adapter =(ChaptersRecyclerViewAdapter) ((RecyclerView) findViewById(R.id.chapter_list_view)).getAdapter();
+                    if(adapter != null) {
+                        adapter.updateStatus(mStatusMap);
+                    }
+                }
             }
         } ;
 
@@ -119,16 +124,19 @@ public class DetailsActivity extends AppCompatActivity implements ChaptersDownlo
 
     @Override
     public void onChaptersDownloaded(MangaDetails details) {
-         mMangaDetails = details;
-        TextView t = findViewById(R.id.manga_title);
-         t.setText(details.title);
-         TrustAllPicassoFactory.getPicasso(this).load(details.titleImagePath)
-                 .placeholder(R.drawable.ic_home_black_24dp)
-                 .error(R.drawable.ic_notifications_black_24dp)
-                 .into((ImageView) findViewById(R.id.detailsImageView));
-        ChaptersRecyclerViewAdapter adapter = new ChaptersRecyclerViewAdapter(this, mMangaDetails, mStatusMap, mModel);
-        ((RecyclerView) findViewById(R.id.chapter_list_view)).setAdapter(adapter);
-        findViewById(R.id.favorite_button).setEnabled(true);
+        if (details != null) {
+            mMangaDetails = details;
+            TextView t = findViewById(R.id.manga_title);
+            t.setText(details.title);
+
+            TrustAllPicassoFactory.getPicasso(this).load(details.titleImagePath)
+                    .placeholder(R.drawable.ic_home_black_24dp)
+                    .error(R.drawable.ic_notifications_black_24dp)
+                    .into((ImageView) findViewById(R.id.detailsImageView));
+            ChaptersRecyclerViewAdapter adapter = new ChaptersRecyclerViewAdapter(this, mMangaDetails, mStatusMap, mModel);
+            ((RecyclerView) findViewById(R.id.chapter_list_view)).setAdapter(adapter);
+            findViewById(R.id.favorite_button).setEnabled(true);
+        }
 
     }
 
